@@ -26,9 +26,12 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
-    - name: Linter
+    - name: Build
       run: ./gradlew build
 #     - name: Copy docs
 #       run: ./gradlew copyDocs
-    - name: Code analysis
+    - name: Push docker image
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: ./gradlew jib

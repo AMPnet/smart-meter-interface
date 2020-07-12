@@ -1,0 +1,25 @@
+= AMPnet Smart Meter Interface API Documentation
+Version {version}, {date}
+:doctype: book
+:toc: left
+:sectnums:
+:toclevels: 2
+:source-highlighter: prettify
+:docinfo: shared
+
+== Introduction
+This document contains a generated documentation for `AMPnet smart meter interface`.
+Source code is available on https://github.com/AMPnet/smart-meter-interface[Github]
+
+== Public API
+.Curl
+include::{snippets}/PublicControllerTest/must return hello/curl-request.adoc[]
+.Request
+include::{snippets}/PublicControllerTest/must return hello/http-request.adoc[]
+.Response
+include::{snippets}/PublicControllerTest/must return hello/http-response.adoc[]
+
+.Request
+include::{snippets}/PublicControllerTest/must return hello/request-body.adoc[]
+.Response
+include::{snippets}/PublicControllerTest/must return hello/response-body.adoc[]

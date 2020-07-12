@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+import java.util.Date
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -8,7 +10,7 @@ plugins {
     id("org.springframework.boot") version "2.4.0-M1"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
     id("org.asciidoctor.convert") version "1.5.8"
-    id("com.google.cloud.tools.jib") version "2.3.0"
+    id("com.google.cloud.tools.jib") version "2.4.0"
     id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
     id("io.gitlab.arturbosch.detekt").version("1.9.1")
     idea
@@ -28,6 +30,7 @@ configurations {
 repositories {
     mavenCentral()
     maven { url = uri("https://repo.spring.io/milestone") }
+    maven(url = "https://jitpack.io")
 }
 
 dependencies {
@@ -41,6 +44,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+
+    implementation("com.github.AMPnet:jwt:0.0.7")
+    implementation("io.github.microutils:kotlin-logging:1.7.10")
 
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     // runtimeOnly("io.r2dbc:r2dbc-postgresql")
@@ -102,5 +108,20 @@ tasks.test {
 }
 
 task("qualityCheck") {
-    dependsOn(tasks.detekt, tasks.jacocoTestReport, tasks.jacocoTestCoverageVerification)
+    dependsOn(tasks.ktlintCheck, tasks.detekt, tasks.jacocoTestReport, tasks.jacocoTestCoverageVerification)
+}
+
+tasks.asciidoctor {
+    attributes(mapOf(
+        "snippets" to file("build/generated-snippets"),
+        "version" to version,
+        "date" to SimpleDateFormat("yyyy-MM-dd").format(Date())
+    ))
+    dependsOn(tasks.test)
+}
+
+tasks.register<Copy>("copyDocs") {
+    from(file("$buildDir/asciidoc/html5"))
+    into(file("src/main/resources/static/docs"))
+    dependsOn(tasks.asciidoctor)
 }
